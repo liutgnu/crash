@@ -1807,3 +1807,53 @@ exit 0
    r = fclose (_rl_tracefp);
    _rl_tracefp = 0;
    return r;
+--- gdb-13.2/gdb/objfiles.h.orig
++++ gdb-13.2/gdb/objfiles.h
+@@ -784,6 +784,8 @@ struct objfile
+      next time.  If an objfile does not have the symbols, it will
+      never have them.  */
+   bool skip_jit_symbol_lookup = false;
++
++  bool all_symtabs_expanded = false;
+ };
+ 
+ /* A deleter for objfile.  */
+--- gdb-13.2/gdb/symfile.c.orig
++++ gdb-13.2/gdb/symfile.c
+@@ -1124,6 +1124,7 @@ symbol_file_add_with_addrs (const gdb_bfd_ref_ptr &abfd, const char *name,
+ 		    styled_string (file_name_style.style (), name));
+ 
+       objfile->expand_all_symtabs ();
++      objfile->all_symtabs_expanded = true;
+     }
+ 
+   /* Note that we only print a message if we have no symbols and have
+@@ -2654,6 +2655,7 @@ reread_symbols (int from_tty)
+ 					   objfile_name (objfile)));
+ 
+ 	      objfile->expand_all_symtabs ();
++              objfile->all_symtabs_expanded = true;
+ 	    }
+ 
+ 	  if (!objfile_has_symbols (objfile))
+--- gdb-13.2/gdb/symtab.c.orig
++++ gdb-13.2/gdb/symtab.c
+@@ -7248,8 +7248,9 @@ gdb_get_line_number(struct gnu_request *req)
+                  */
+                 if (req->lm) {
+                         objfile = req->lm->loaded_objfile;
+-                        if (!objfile_has_full_symbols(objfile)) {
++                        if (!objfile->all_symtabs_expanded) {
+                                objfile->expand_all_symtabs ();
++                               objfile->all_symtabs_expanded = true;
+                                 sal = find_pc_line(pc, 0);
+                         }
+                 }
+@@ -7913,6 +7914,7 @@ iterate_datatypes (struct gnu_request *req)
+   for (objfile *objfile : current_program_space->objfiles ())
+     {
+       objfile->expand_all_symtabs ();
++      objfile->all_symtabs_expanded = true;
+ 
+       for (compunit_symtab *cust : objfile->compunits ())
+         {
