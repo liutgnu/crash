@@ -2228,6 +2228,9 @@ struct offset_table {                    /* stash of commonly-used offsets */
 	long irq_data_irq;
 	long zspage_huge;
 	long zram_comp_algs;
+	long mnt_namespace_mounts;
+	long mnt_namespace_nr_mounts;
+	long mount_mnt_node;
 };
 
 struct size_table {         /* stash of commonly-used sizes */
