@@ -22,5 +22,5 @@ jobs:
       run: docker pull arm64v8/fedora                                                    
     - name: Build project within Fedora container                                
       run: |                                                                     
-        docker run --rm -v ${{ github.workspace }}:/workspace fedora bash -c "cd /workspace && uname -a && sed -i 's/dot:mega/dot/g' Makefile && dnf makecache && dnf install -y diffutils ncurses-devel gmp-devel patch gcc gcc-c++ lzo-devel snappy-devel libzstd-devel wget texinfo bison flex && target=ARM64 make -j$(nproc) Warn lzo zstd snappy"
+        docker run --rm -v ${{ github.workspace }}:/workspace arm64v8/fedora bash -c "cd /workspace && uname -a && sed -i 's/dot:mega/dot/g' Makefile && dnf makecache && dnf install -y diffutils ncurses-devel gmp-devel patch gcc gcc-c++ lzo-devel snappy-devel libzstd-devel wget texinfo bison flex && target=ARM64 make -j$(nproc) Warn lzo zstd snappy"
   
