@@ -1,0 +1,44 @@
+name: Build CI
+
+on:
+  push:
+    branches: [ "master-next" ]
+  pull_request:
+    branches: [ "master-next" ]
+
+jobs:
+  x86_64_target:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install tools
+        run: sudo apt-get install patch gcc g++ liblzo2-dev libsnappy-dev libzstd-dev wget texinfo bison flex
+      - name: make
+        run: make -j$(nproc) Warn lzo zstd snappy
+  arm64_target:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install tools
+        run: sudo apt-get install patch gcc g++ liblzo2-dev libsnappy-dev libzstd-dev wget texinfo bison flex
+      - name: make
+        run:
+          target=ARM64 make -j$(nproc) Warn lzo zstd snappy
+  ppc64_target:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install tools
+        run: sudo apt-get install patch gcc g++ liblzo2-dev libsnappy-dev libzstd-dev wget texinfo bison flex
+      - name: make
+        run:
+          target=PPC64 make -j$(nproc) Warn lzo zstd snappy
+  riscv64_target:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install tools
+        run: sudo apt-get install patch gcc g++ liblzo2-dev libsnappy-dev libzstd-dev wget texinfo bison flex
+      - name: make
+        run:
+          target=RISCV64 make -j$(nproc) Warn lzo zstd snappy

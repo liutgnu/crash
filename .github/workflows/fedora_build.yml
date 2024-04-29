@@ -1,0 +1,59 @@
+name: fedora pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  x86_64_target:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Pull Fedora Docker image
+      run: docker pull fedora
+    - name: Build project within Fedora container
+      run: |
+        docker run --rm -v ${{ github.workspace }}:/workspace fedora bash -c "cd /workspace && sed -i 's/dot:mega/dot/g' Makefile && dnf makecache && dnf install -y diffutils ncurses-devel gmp-devel patch gcc gcc-c++ lzo-devel snappy-devel libzstd-devel wget texinfo bison flex && make -j$(nproc) Warn lzo zstd snappy"
+  arm64_target:                                                                 
+    runs-on: ubuntu-latest                                                       
+    steps:                                                                       
+    - name: Checkout repository                                                  
+      uses: actions/checkout@v2                                                  
+    - name: Set up Docker Buildx                                                 
+      uses: docker/setup-buildx-action@v1                                        
+    - name: Pull Fedora Docker image                                             
+      run: docker pull fedora                                                    
+    - name: Build project within Fedora container                                
+      run: |                                                                     
+        docker run --rm -v ${{ github.workspace }}:/workspace fedora bash -c "cd /workspace && sed -i 's/dot:mega/dot/g' Makefile && dnf makecache && dnf install -y diffutils ncurses-devel gmp-devel patch gcc gcc-c++ lzo-devel snappy-devel libzstd-devel wget texinfo bison flex && target=ARM64 make -j$(nproc) Warn lzo zstd snappy"
+  ppc64_target:                                                                 
+    runs-on: ubuntu-latest                                                       
+    steps:                                                                       
+    - name: Checkout repository                                                  
+      uses: actions/checkout@v2                                                  
+    - name: Set up Docker Buildx                                                 
+      uses: docker/setup-buildx-action@v1                                        
+    - name: Pull Fedora Docker image                                             
+      run: docker pull fedora                                                    
+    - name: Build project within Fedora container                                
+      run: |                                                                     
+        docker run --rm -v ${{ github.workspace }}:/workspace fedora bash -c "cd /workspace && sed -i 's/dot:mega/dot/g' Makefile && dnf makecache && dnf install -y diffutils ncurses-devel gmp-devel patch gcc gcc-c++ lzo-devel snappy-devel libzstd-devel wget texinfo bison flex && target=PPC64 make -j$(nproc) Warn lzo zstd snappy"
+  riscv64_target:                                                                 
+    runs-on: ubuntu-latest                                                       
+    steps:                                                                       
+    - name: Checkout repository                                                  
+      uses: actions/checkout@v2                                                  
+    - name: Set up Docker Buildx                                                 
+      uses: docker/setup-buildx-action@v1                                        
+    - name: Pull Fedora Docker image                                             
+      run: docker pull fedora                                                    
+    - name: Build project within Fedora container                                
+      run: |                                                                     
+        docker run --rm -v ${{ github.workspace }}:/workspace fedora bash -c "cd /workspace && sed -i 's/dot:mega/dot/g' Makefile && dnf makecache && dnf install -y diffutils ncurses-devel gmp-devel patch gcc gcc-c++ lzo-devel snappy-devel libzstd-devel wget texinfo bison flex && target=RISCV64 make -j$(nproc) Warn lzo zstd snappy"
