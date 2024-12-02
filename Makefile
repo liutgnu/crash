@@ -191,6 +191,9 @@ GDB_7.6_OFILES=${GDB}/gdb/symtab.o
 GDB_10.2_FILES=
 GDB_10.2_OFILES=${GDB}/gdb/symtab.o crash_target.o
 
+GDB_15.2_FILES=
+GDB_15.2_OFILES=${GDB}/gdb/symtab.o crash_target.o
+
 # 
 # GDB_FLAGS is passed up from the gdb Makefile.
 #
